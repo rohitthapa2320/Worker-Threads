@@ -2,7 +2,7 @@ const {Worker} = require('worker_threads');
 
 let num=10;
 
-//Creating a new worker thread
+//Creating a new worker thread and sent number to worker 
 const worker= new Worker('./worker.js', {workerData: {num: num}});
 
 //Listening to message from worker thread
