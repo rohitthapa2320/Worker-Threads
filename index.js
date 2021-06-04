@@ -5,6 +5,19 @@ const {Worker} = require('worker_threads');
 //Creating a new worker thread and sending number to worker through workerData 
 // const worker= new Worker('./worker.js', {workerData: {num: num}});
 
+let nums =[2,3,4,6];
+
+//get size of the array buffer with int32 size buffer for each element in the array
+const size = Int32Array.BYTES_PER_ELEMENT*nums.length;
+
+//create the buffer for the shared array
+const sharedBuffer = new SharedArrayBuffer(size);
+const sharedArray = new Int32Array(sharedBuffer);
+
+nums.forEach((num, index) => {
+  Atomics.store(sharedArray, index, num);
+})
+
 const worker = new Worker('./worker.js');
 
 //Listening to message from worker thread
@@ -32,6 +45,9 @@ worker.on('exit', exitCode => {
 
 console.log("\nWe are in parent thread\n");
 
-//Sending number to worker using postMesssage
-worker.postMessage({num:12});
-worker.postMessage({num:15});
+// //Sending number to worker using postMesssage
+// worker.postMessage({num:12});
+// worker.postMessage({num:15});
+
+//Sending data to worker using SharedArrayBuffer
+worker.postMessage({nums: sharedArray});

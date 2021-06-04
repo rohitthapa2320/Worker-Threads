@@ -9,8 +9,14 @@ console.log("We are in worker thread\n");
 // parentPort.postMessage(getFac(workerData.num));
 
 //Listening message from main thread
-parentPort.on('message', data => {
-  parentPort.postMessage({num: data.num, factorial: getFac(data.num)});
+// parentPort.on('message', data => {
+//   parentPort.postMessage({num: data.num, factorial: getFac(data.num)});
+// })
+//Listening message from main thread
+parentPort.on("message", data => {
+  data.nums.forEach(num => {
+    parentPort.postMessage({num: num, factorial: getFac(num)});
+  });
 })
 
 //Fuction to find factorial of a number
